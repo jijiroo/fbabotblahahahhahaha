@@ -7,5 +7,5 @@ module.exports = {
 
   // Role names (must match exactly, without the @)
   LEAD_ROLE_NAME: 'Reddit Lead',
-  PAGE_RUNNER_ROLE_NAME: 'Reddit Page Runner',
+  PAGE_RUNNER_ROLE_NAME: 'Reddit Page Runners',
 };
