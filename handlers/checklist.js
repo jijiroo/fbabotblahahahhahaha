@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const store = require('../store');
+const config = require('../config');
 
 const CHECKLISTS = {
   onboarding: [
@@ -68,7 +69,15 @@ async function handleChecklistButton(interaction, type, creatorKey, itemKey) {
 
   if (isComplete(type, items)) {
     if (type === 'onboarding') {
-      const roleMentions = (creator.roleIds || []).map(id => `<@&${id}>`).join(' ') || 'the assigned team';
+      const leadRole = interaction.guild.roles.cache.find(r => r.name === config.LEAD_ROLE_NAME);
+      const assignedIds = creator.roleIds || [];
+
+      // Always include @Reddit Lead, plus whichever roles were picked during !assign.
+      // Use a Set so we don't double-ping if Reddit Lead was also picked in !assign.
+      const mentionIds = new Set(assignedIds);
+      if (leadRole) mentionIds.add(leadRole.id);
+
+      const roleMentions = [...mentionIds].map(id => `<@&${id}>`).join(' ') || 'the assigned team';
       await interaction.channel.send({
         content: `✅ Onboarding checklist complete for **${creatorKey}**! ${roleMentions}`,
       });
